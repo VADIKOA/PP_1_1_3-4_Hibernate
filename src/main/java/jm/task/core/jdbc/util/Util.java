@@ -14,23 +14,27 @@ public class Util {
     private static final String USERNAME = "root";
     private static final String PASSWORD = "12345678";
     private static Connection connection;
-
-    private static Configuration cnf = new Configuration()
-            .addAnnotatedClass(User.class)
-            .setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver")
-            .setProperty("hibernate.connection.url", URL)
-            .setProperty("hibernate.connection.username", USERNAME)
-            .setProperty("hibernate.connection.password", PASSWORD)
-            .setProperty("hibernate.show_sql", "true")
-            .setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect")
-            .setProperty("hibernate.current_session_context_class", "thread");
+    private static SessionFactory sessionFactory = null;
 
     private Util() {
 
     }
 
     public static SessionFactory getSessionFactory() {
-        return cnf.buildSessionFactory();
+        final Configuration cnf = new Configuration()
+                .addAnnotatedClass(User.class)
+                .setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver")
+                .setProperty("hibernate.connection.url", URL)
+                .setProperty("hibernate.connection.username", USERNAME)
+                .setProperty("hibernate.connection.password", PASSWORD)
+                .setProperty("hibernate.show_sql", "true")
+                .setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect")
+                .setProperty("hibernate.current_session_context_class", "thread");
+
+        if (sessionFactory == null) {
+            sessionFactory = cnf.buildSessionFactory();
+        }
+        return sessionFactory;
     }
 
     public static Connection getConnection() {
